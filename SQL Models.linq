@@ -19,7 +19,7 @@ void Main()
 	// 這邊修改為您要執行的 SQL Command
 	//var sqlCommand = $@"SELECT * FROM {nameOfTableAndClass}";
 	var sqlCommand = $@"
-SELECT top 1 *
+SELECT TOP 1 *
 FROM TableName
 	";
 	// 在 DumpClass 方法裡放 SQL Command 和 Class 名稱
@@ -78,9 +78,13 @@ public static class LINQPadExtensions
 				var name = TypeAliases.ContainsKey(type) ? TypeAliases[type] : type.Name;
 				var isNullable = (bool)row["AllowDBNull"] && NullableTypes.Contains(type);
 				var collumnName = (string)row["ColumnName"];
-
+				
+				if(type == typeof(string)){
+					builder.AppendLine(string.Format("\t[StringLength({0})]", row["ColumnSize"]));
+				}
+				
 				builder.AppendLine(string.Format("\tpublic {0}{1} {2} {{ get; set; }}", name, isNullable ? "?" : string.Empty, collumnName));
-				//builder.AppendLine();
+				builder.AppendLine();
 			}
 
 			builder.AppendLine("}");
